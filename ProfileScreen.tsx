@@ -69,7 +69,7 @@ function InfoRow({
   return (
     <div className="flex items-start gap-3 py-3.5">
       <div className="h-9 w-9 shrink-0 rounded-xl bg-ink-100 grid place-items-center">
-        <Icon className="h-4.5 w-4.5 text-ink-600" />
+        <Icon className="h-4 w-4 text-ink-600" />
       </div>
       <div className="flex-1">
         <p className="text-xs text-ink-500">{label}</p>

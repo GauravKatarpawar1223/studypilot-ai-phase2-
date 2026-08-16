@@ -4,6 +4,7 @@ import type { TopicMastery } from '@/types';
 
 interface Props {
   masteries: TopicMastery[];
+  title?: string;
   onBuildPlan: () => Promise<void>;
   onBack: () => void;
 }
@@ -14,7 +15,7 @@ const GROUPS: { status: TopicMastery['status']; label: string; icon: typeof Tren
   { status: 'strong', label: 'Strong topics', icon: TrendingUp, tone: 'text-green-600 bg-green-50' },
 ];
 
-export default function DiagnosticResultsScreen({ masteries, onBuildPlan, onBack }: Props) {
+export default function DiagnosticResultsScreen({ masteries, title = 'Your Results', onBuildPlan, onBack }: Props) {
   const [loading, setLoading] = useState(false);
 
   const handleBuildPlan = async () => {
@@ -36,7 +37,7 @@ export default function DiagnosticResultsScreen({ masteries, onBuildPlan, onBack
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
-        <h1 className="text-xl font-bold text-ink-900">Your Results</h1>
+        <h1 className="text-xl font-bold text-ink-900">{title}</h1>
       </header>
 
       <p className="mt-4 text-sm text-ink-600">

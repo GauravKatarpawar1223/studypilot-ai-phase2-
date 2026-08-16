@@ -49,18 +49,52 @@ const REASON_TEMPLATES: Record<Language, Record<TopicMastery['status'], string>>
   },
 };
 
-const NUDGE_TEMPLATES: Record<Language, { improved: string; keepGoing: string }> = {
+const NUDGE_COPY: Record<
+  Language,
+  {
+    whatChangedImproved: string;
+    whatChangedStayed: string;
+    whyImproved: string;
+    whyStayed: string;
+    nextImproved: string;
+    nextStayed: string;
+    nextNone: string;
+    messageImproved: string;
+    messageStayed: string;
+  }
+> = {
   English: {
-    improved: 'Nice work on {topic}! Moving {next} up next.',
-    keepGoing: "Let's keep practicing {topic} a little more before moving on.",
+    whatChangedImproved: '{topic} moved down your priority list.',
+    whatChangedStayed: '{topic} stays at the top of your plan.',
+    whyImproved: 'You answered {correct}/{total} correctly this time, improving to {scorePct}%.',
+    whyStayed: 'You answered {correct}/{total} correctly — this skill still needs more work.',
+    nextImproved: 'Next up: {next}.',
+    nextStayed: 'Practice {topic} again to strengthen it.',
+    nextNone: 'Keep practicing {topic} a little more.',
+    messageImproved: 'Nice work on {topic}! Moving {next} up next.',
+    messageStayed: "Let's keep practicing {topic} a little more before moving on.",
   },
   Hindi: {
-    improved: 'बढ़िया! {topic} में अच्छा किया। अब {next} पर आगे बढ़ते हैं।',
-    keepGoing: 'आगे बढ़ने से पहले {topic} का थोड़ा और अभ्यास करते हैं।',
+    whatChangedImproved: '{topic} अब आपकी प्राथमिकता सूची में नीचे चला गया है।',
+    whatChangedStayed: '{topic} अभी भी आपकी योजना में सबसे ऊपर है।',
+    whyImproved: 'आपने इस बार {correct}/{total} सही उत्तर दिए, {scorePct}% तक सुधार हुआ।',
+    whyStayed: 'आपने {correct}/{total} सही उत्तर दिए — इस विषय पर अभी और काम चाहिए।',
+    nextImproved: 'अब आगे: {next}।',
+    nextStayed: '{topic} को मजबूत करने के लिए फिर से अभ्यास करें।',
+    nextNone: '{topic} का थोड़ा और अभ्यास करते रहें।',
+    messageImproved: 'बढ़िया! {topic} में अच्छा किया। अब {next} पर आगे बढ़ते हैं।',
+    messageStayed: 'आगे बढ़ने से पहले {topic} का थोड़ा और अभ्यास करते हैं।',
   },
   Marathi: {
-    improved: 'छान! {topic} मध्ये चांगली कामगिरी. आता पुढे {next} घेऊया.',
-    keepGoing: 'पुढे जाण्यापूर्वी {topic} चा थोडा अधिक सराव करूया.',
+    whatChangedImproved: '{topic} आता तुमच्या प्राधान्य यादीत खाली गेला आहे.',
+    whatChangedStayed: '{topic} अजूनही तुमच्या योजनेत सर्वात वर आहे.',
+    whyImproved: 'यावेळी तुम्ही {correct}/{total} बरोबर उत्तरे दिली, {scorePct}% पर्यंत सुधारणा झाली.',
+    whyStayed: 'तुम्ही {correct}/{total} बरोबर उत्तरे दिली — या कौशल्यावर अजून काम हवे.',
+    nextImproved: 'पुढे: {next}.',
+    nextStayed: '{topic} मजबूत करण्यासाठी पुन्हा सराव करा.',
+    nextNone: '{topic} चा थोडा अधिक सराव सुरू ठेवा.',
+    messageImproved: 'छान! {topic} मध्ये चांगली कामगिरी. आता पुढे {next} घेऊया.',
+    messageStayed: 'पुढे जाण्यापूर्वी {topic} चा थोडा अधिक सराव करूया.',
   },
 };
 
@@ -147,6 +181,7 @@ function buildFallbackAdaptation(
   const masteryByCode = new Map(masteries.map((m): [string, TopicMastery] => [m.topicCode, m]));
   const practicedInfo = TOPIC_BANK[session.topicCode];
   const practicedMastery = masteryByCode.get(session.topicCode);
+  const practicedTopicName = practicedInfo?.topic ?? session.topicCode;
 
   const updatedItems: StudyPlanItem[] = plan.items.map((item): StudyPlanItem => {
     if (item.topicCode !== session.topicCode) return item;
@@ -177,16 +212,38 @@ function buildFallbackAdaptation(
     (i) => i.status !== 'done' && i.topicCode !== session.topicCode
   );
 
-  const improved = (practicedMastery?.scorePct ?? 0) >= 70;
-  const template = NUDGE_TEMPLATES[language][improved ? 'improved' : 'keepGoing'];
-  const message = fill(template, {
-    topic: practicedInfo?.topic ?? session.topicCode,
+  const correct = session.answers.filter((a) => a.correct).length;
+  const total = session.answers.length;
+  const scorePct = practicedMastery?.scorePct ?? session.scorePct;
+  const improved = scorePct >= 70;
+  const copy = NUDGE_COPY[language];
+
+  const values = {
+    topic: practicedTopicName,
     next: nextPending?.topic ?? '',
-  });
+    correct: String(correct),
+    total: String(total),
+    scorePct: String(scorePct),
+  };
+
+  const whatChanged = fill(improved ? copy.whatChangedImproved : copy.whatChangedStayed, values);
+  const why = fill(improved ? copy.whyImproved : copy.whyStayed, values);
+  const next = fill(
+    improved ? (nextPending ? copy.nextImproved : copy.nextNone) : copy.nextStayed,
+    values
+  );
+  const message = fill(improved ? copy.messageImproved : copy.messageStayed, values);
 
   return {
     plan: { ...plan, items: reordered, generatedAt: Date.now(), source: 'fallback' as const },
-    nudge: { message, generatedAt: Date.now(), source: 'fallback' as const },
+    nudge: {
+      message,
+      whatChanged,
+      why,
+      next,
+      generatedAt: Date.now(),
+      source: 'fallback' as const,
+    },
   };
 }
 
@@ -243,7 +300,7 @@ export async function generateStudyPlan(
 
 interface AiAdaptResponse {
   items: { topicCode: string; reason: string; status: StudyPlanItem['status'] }[];
-  nudgeMessage: string;
+  nudge: { message: string; whatChanged: string; why: string; next: string };
 }
 
 export async function adaptPlan(
@@ -261,7 +318,7 @@ export async function adaptPlan(
       language,
     });
 
-    if (!res?.items?.length || !res.nudgeMessage) throw new Error('Incomplete AI adaptation response');
+    if (!res?.items?.length || !res.nudge?.message) throw new Error('Incomplete AI adaptation response');
 
     const items: StudyPlanItem[] = res.items
       .map((raw, i) => {
@@ -283,7 +340,14 @@ export async function adaptPlan(
 
     return {
       plan: { generatedAt: Date.now(), language, items, source: 'ai' as const },
-      nudge: { message: res.nudgeMessage, generatedAt: Date.now(), source: 'ai' as const },
+      nudge: {
+        message: res.nudge.message,
+        whatChanged: res.nudge.whatChanged,
+        why: res.nudge.why,
+        next: res.nudge.next,
+        generatedAt: Date.now(),
+        source: 'ai' as const,
+      },
     };
   } catch {
     return buildFallbackAdaptation(plan, masteries, session, language);

@@ -1,5 +1,5 @@
 import { TOPIC_BANK } from '@/data/questionBank';
-import type { DiagnosticAnswer, PracticeSession, TopicMastery } from '@/types';
+import type { DiagnosticAnswer, PracticeSession, SkillDifficulty, TopicMastery } from '@/types';
 
 function statusFromScore(scorePct: number): TopicMastery['status'] {
   if (scorePct >= 80) return 'strong';
@@ -7,7 +7,9 @@ function statusFromScore(scorePct: number): TopicMastery['status'] {
   return 'weak';
 }
 
-/** Groups diagnostic answers by topic and produces initial mastery records. */
+/** Groups diagnostic answers by topic and produces initial mastery records.
+ * `diagnosticScorePct` is fixed to the initial score here and never
+ * overwritten later — it's the baseline used for "before vs after" progress. */
 export function scoreDiagnostic(answers: DiagnosticAnswer[]): TopicMastery[] {
   const byTopic = new Map<string, DiagnosticAnswer[]>();
   answers.forEach((a) => {
@@ -29,6 +31,7 @@ export function scoreDiagnostic(answers: DiagnosticAnswer[]): TopicMastery[] {
       chapter: info.chapter,
       status: statusFromScore(scorePct),
       scorePct,
+      diagnosticScorePct: scorePct,
       attempts: 1,
     });
   });
@@ -70,4 +73,28 @@ export function applySessionToMasteries(
   };
 
   return masteries.map((m) => (m.topicCode === session.topicCode ? updated : m));
+}
+
+/**
+ * Merges a fresh batch of mastery records (e.g. from a new diagnostic) into
+ * an existing masteries array, replacing any record for the same topic and
+ * appending new ones. Used because Phase 4 allows two independent
+ * diagnostics (general subjects and SAT prep) to both contribute to the
+ * same shared progress.masteries array without one wiping out the other.
+ */
+export function mergeMasteries(existing: TopicMastery[], fresh: TopicMastery[]): TopicMastery[] {
+  const byCode = new Map(existing.map((m): [string, TopicMastery] => [m.topicCode, m]));
+  fresh.forEach((m) => byCode.set(m.topicCode, m));
+  return Array.from(byCode.values());
+}
+
+/**
+ * Deterministic difficulty recommendation based on current mastery score.
+ * Never depends on the AI endpoint — always available, matching Phase 4's
+ * reliability requirement (item 13).
+ */
+export function recommendedDifficulty(scorePct: number): SkillDifficulty {
+  if (scorePct < 50) return 'easy';
+  if (scorePct < 80) return 'medium';
+  return 'hard';
 }

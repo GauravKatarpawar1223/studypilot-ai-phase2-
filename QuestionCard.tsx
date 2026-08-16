@@ -1,4 +1,4 @@
-import { Check, X } from 'lucide-react';
+import { Check, X, Lightbulb } from 'lucide-react';
 
 interface Props {
   question: string;
@@ -7,6 +7,8 @@ interface Props {
   correctIndex: number | null;
   revealed: boolean;
   onSelect: (index: number) => void;
+  /** Optional short explanation shown once the answer is revealed. */
+  explanation?: string;
 }
 
 export default function QuestionCard({
@@ -16,6 +18,7 @@ export default function QuestionCard({
   correctIndex,
   revealed,
   onSelect,
+  explanation,
 }: Props) {
   return (
     <div>
@@ -45,6 +48,13 @@ export default function QuestionCard({
           );
         })}
       </div>
+
+      {revealed && explanation && (
+        <div className="mt-4 flex items-start gap-2.5 rounded-2xl bg-primary-50 p-3.5">
+          <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-primary-600" />
+          <p className="text-sm text-primary-800">{explanation}</p>
+        </div>
+      )}
     </div>
   );
 }

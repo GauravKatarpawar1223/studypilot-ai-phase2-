@@ -1,17 +1,31 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import QuestionCard from '@/components/QuestionCard';
-import { getDiagnosticQuestions } from '@/data/questionBank';
-import type { DiagnosticAnswer } from '@/types';
+import { getDiagnosticQuestions, getSatDiagnosticQuestions } from '@/data/questionBank';
+import type { DiagnosticAnswer, Language } from '@/types';
 
 interface Props {
   subjects: string[];
+  language: Language;
+  /** 'sat' pulls the SAT skill bank regardless of `subjects`; 'subjects' (default) is the Phase 2/3 behavior. */
+  mode?: 'subjects' | 'sat';
+  title?: string;
   onComplete: (answers: DiagnosticAnswer[]) => void;
   onBack: () => void;
 }
 
-export default function DiagnosticScreen({ subjects, onComplete, onBack }: Props) {
-  const questions = useMemo(() => getDiagnosticQuestions(subjects), [subjects]);
+export default function DiagnosticScreen({
+  subjects,
+  language,
+  mode = 'subjects',
+  title = 'Diagnostic Assessment',
+  onComplete,
+  onBack,
+}: Props) {
+  const questions = useMemo(
+    () => (mode === 'sat' ? getSatDiagnosticQuestions() : getDiagnosticQuestions(subjects)),
+    [mode, subjects]
+  );
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<DiagnosticAnswer[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
@@ -67,7 +81,7 @@ export default function DiagnosticScreen({ subjects, onComplete, onBack }: Props
           <ChevronLeft className="h-6 w-6" />
         </button>
         <div>
-          <h1 className="text-lg font-bold text-ink-900">Diagnostic Assessment</h1>
+          <h1 className="text-lg font-bold text-ink-900">{title}</h1>
           <p className="text-xs text-ink-500">
             Question {index + 1} of {questions.length}
           </p>
@@ -93,6 +107,7 @@ export default function DiagnosticScreen({ subjects, onComplete, onBack }: Props
           correctIndex={revealed ? q.correctIndex : null}
           revealed={revealed}
           onSelect={handleSelect}
+          explanation={q.explanation[language]}
         />
       </div>
 

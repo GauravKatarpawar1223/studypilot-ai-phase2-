@@ -1,14 +1,78 @@
-import { ChevronLeft, BookOpen, Pencil, HelpCircle, CalendarCheck, BookMarked } from 'lucide-react';
-import type { TopicInfo } from '@/types';
+import { ChevronLeft, BookOpen, Pencil, HelpCircle, CalendarCheck, BookMarked, Clock, Sparkles } from 'lucide-react';
+import { getTopicMeta, QUESTION_BANK } from '@/data/questionBank';
+import type { Language, MasteryStatus, TopicInfo, TopicMastery } from '@/types';
 
 interface Props {
   topic: TopicInfo;
+  language: Language;
+  /** The student's current mastery for this topic, if it's been diagnosed/practiced. */
+  mastery?: TopicMastery;
+  /** The study plan's stated reason for this topic, if it's part of the active plan. */
+  planReason?: string;
   onBack: () => void;
   onPractice: (mode: 'practice' | 'quiz') => void;
   onMakeStudyPlan: () => void;
 }
 
-export default function TopicDetails({ topic, onBack, onPractice, onMakeStudyPlan }: Props) {
+const STATUS_LABEL: Record<Language, Record<MasteryStatus, string>> = {
+  English: { weak: 'Needs work', developing: 'Developing', strong: 'Strong' },
+  Hindi: { weak: 'कमजोर', developing: 'विकासशील', strong: 'मजबूत' },
+  Marathi: { weak: 'कमकुवत', developing: 'विकसनशील', strong: 'मजबूत' },
+};
+
+const NOT_ASSESSED_LABEL: Record<Language, string> = {
+  English: 'Not yet assessed',
+  Hindi: 'अभी तक मूल्यांकित नहीं',
+  Marathi: 'अद्याप मूल्यांकन नाही',
+};
+
+const GENERIC_WHY: Record<Language, string> = {
+  English: 'Take the diagnostic assessment from Home to get a recommendation tailored to you for this topic.',
+  Hindi: 'इस विषय के लिए व्यक्तिगत सिफारिश पाने के लिए होम से डायग्नोस्टिक असेसमेंट लें।',
+  Marathi: 'या विषयासाठी वैयक्तिक शिफारस मिळवण्यासाठी होम वरून डायग्नोस्टिक असेसमेंट घ्या.',
+};
+
+const NEXT_STEP: Record<Language, Record<MasteryStatus | 'unknown', string>> = {
+  English: {
+    weak: 'Start with Practice to build the basics, then try Quiz Me.',
+    developing: 'Try Quiz Me to check how much you remember.',
+    strong: 'A quick Quiz Me will help you stay sharp.',
+    unknown: 'Practice a few questions to see where you stand.',
+  },
+  Hindi: {
+    weak: 'आधार मजबूत करने के लिए Practice से शुरू करें, फिर Quiz Me आज़माएं।',
+    developing: 'आपको कितना याद है यह जांचने के लिए Quiz Me आज़माएं।',
+    strong: 'तेज़ बने रहने के लिए एक त्वरित Quiz Me मदद करेगा।',
+    unknown: 'आप कहां खड़े हैं यह देखने के लिए कुछ सवालों का अभ्यास करें।',
+  },
+  Marathi: {
+    weak: 'पाया मजबूत करण्यासाठी Practice ने सुरुवात करा, नंतर Quiz Me करून पहा.',
+    developing: 'तुम्हाला किती लक्षात आहे हे तपासण्यासाठी Quiz Me करून पहा.',
+    strong: 'तयारी टिकवण्यासाठी एक द्रुत Quiz Me मदत करेल.',
+    unknown: 'तुम्ही कुठे आहात हे पाहण्यासाठी काही प्रश्नांचा सराव करा.',
+  },
+};
+
+const STATUS_BADGE_CLASSES: Record<MasteryStatus, string> = {
+  weak: 'bg-red-50 text-red-600',
+  developing: 'bg-accent-50 text-accent-600',
+  strong: 'bg-green-50 text-green-600',
+};
+
+export default function TopicDetails({
+  topic,
+  language,
+  mastery,
+  planReason,
+  onBack,
+  onPractice,
+  onMakeStudyPlan,
+}: Props) {
+  const meta = getTopicMeta(topic.code);
+  const questionCount = QUESTION_BANK[topic.code]?.length ?? 0;
+  const nextStep = NEXT_STEP[language][mastery?.status ?? 'unknown'];
+  const why = planReason ?? GENERIC_WHY[language];
+
   const actions = [
     {
       label: 'Learn',
@@ -72,6 +136,37 @@ export default function TopicDetails({ topic, onBack, onPractice, onMakeStudyPla
           <Row label="Topic" value={topic.topic} />
           <Row label="Topic code" value={topic.code} />
         </dl>
+      </div>
+
+      <div className="mt-4 card">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-ink-700">Why this topic</p>
+          <span
+            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+              mastery ? STATUS_BADGE_CLASSES[mastery.status] : 'bg-ink-100 text-ink-500'
+            }`}
+          >
+            {mastery ? STATUS_LABEL[language][mastery.status] : NOT_ASSESSED_LABEL[language]}
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-ink-600">{why}</p>
+        <p className="mt-3 text-sm text-ink-600">{meta.summary[language]}</p>
+
+        <div className="mt-3 flex items-center gap-4 text-xs text-ink-500">
+          <span className="flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5" />
+            {meta.estimatedMinutes} min
+          </span>
+          <span className="flex items-center gap-1">
+            <Pencil className="h-3.5 w-3.5" />
+            {questionCount} questions
+          </span>
+        </div>
+
+        <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-accent-50 p-3">
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent-600" />
+          <p className="text-sm text-accent-700">{nextStep}</p>
+        </div>
       </div>
 
       <p className="mt-7 text-sm font-semibold text-ink-700">What would you like to do?</p>
