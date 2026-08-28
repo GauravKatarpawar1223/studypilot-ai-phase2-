@@ -83,8 +83,8 @@ export default function ScanScreen({ onBack, onTopic }: Props) {
           <div className="mt-6 flex items-start gap-2.5 rounded-xl bg-accent-50 p-3.5">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent-600" />
             <p className="text-xs text-accent-700">
-              Live camera scanning will be added in a later phase. This demo loads a sample
-              topic so you can explore the learning flow.
+              Live camera scanning isn't available in this version. Use the sample topic below
+              or enter a code to explore the learning flow.
             </p>
           </div>
 

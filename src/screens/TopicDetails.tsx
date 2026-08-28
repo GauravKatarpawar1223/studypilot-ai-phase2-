@@ -10,6 +10,7 @@ interface Props {
   /** The study plan's stated reason for this topic, if it's part of the active plan. */
   planReason?: string;
   onBack: () => void;
+  onOpenLesson: () => void;
   onPractice: (mode: 'practice' | 'quiz') => void;
   onMakeStudyPlan: () => void;
 }
@@ -65,6 +66,7 @@ export default function TopicDetails({
   mastery,
   planReason,
   onBack,
+  onOpenLesson,
   onPractice,
   onMakeStudyPlan,
 }: Props) {
@@ -76,32 +78,27 @@ export default function TopicDetails({
   const actions = [
     {
       label: 'Learn',
-      desc: 'Read the lesson for this topic',
+      desc: 'Understand the concept before you practice',
       icon: BookOpen,
-      onClick: () =>
-        alert('Full lesson content is coming in a later phase of StudyPilot AI.'),
-      soon: true,
+      onClick: onOpenLesson,
     },
     {
       label: 'Practice',
       desc: 'Solve practice problems',
       icon: Pencil,
       onClick: () => onPractice('practice'),
-      soon: false,
     },
     {
       label: 'Quiz Me',
       desc: 'Test yourself with quick questions',
       icon: HelpCircle,
       onClick: () => onPractice('quiz'),
-      soon: false,
     },
     {
       label: 'Make Study Plan',
       desc: 'Build a plan around this topic',
       icon: CalendarCheck,
       onClick: onMakeStudyPlan,
-      soon: false,
     },
   ] as const;
 
@@ -171,7 +168,7 @@ export default function TopicDetails({
 
       <p className="mt-7 text-sm font-semibold text-ink-700">What would you like to do?</p>
       <div className="mt-3 space-y-3">
-        {actions.map(({ label, desc, icon: Icon, onClick, soon }) => (
+        {actions.map(({ label, desc, icon: Icon, onClick }) => (
           <button
             key={label}
             onClick={onClick}
@@ -184,11 +181,6 @@ export default function TopicDetails({
               <p className="text-base font-semibold text-ink-900">{label}</p>
               <p className="text-xs text-ink-500">{desc}</p>
             </div>
-            {soon && (
-              <span className="rounded-full bg-ink-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-ink-500">
-                Soon
-              </span>
-            )}
           </button>
         ))}
       </div>

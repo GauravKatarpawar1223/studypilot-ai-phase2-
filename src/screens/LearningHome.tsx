@@ -460,19 +460,21 @@ export default function LearningHome({
                 </div>
               )}
             </button>
-            <button
-              onClick={onViewSatPlan}
-              className="btn-ghost mt-3 flex items-center justify-center gap-2"
-            >
-              <Award className="h-4 w-4" />
-              {satLabels.viewPlan}
-            </button>
           </div>
         ) : (
           <div className="card">
             <p className="text-sm font-semibold text-ink-900">{satLabels.planComplete}</p>
             <p className="mt-1 text-xs text-ink-500">{satLabels.planCompleteDesc}</p>
           </div>
+        )}
+        {satPlan && (
+          <button
+            onClick={onViewSatPlan}
+            className="btn-ghost mt-3 flex items-center justify-center gap-2"
+          >
+            <Award className="h-4 w-4" />
+            {satLabels.viewPlan}
+          </button>
         )}
       </section>
 

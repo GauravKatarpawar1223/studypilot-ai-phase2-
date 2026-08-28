@@ -50,7 +50,7 @@ export default function ProfileScreen({ profile, onEditSetup, onSignOut }: Props
         <Logo size="sm" />
         <div>
           <p className="text-xs font-semibold text-ink-500">StudyPilot AI</p>
-          <p className="text-[10px] text-ink-400">Phase 1 · Foundation</p>
+          <p className="text-[10px] text-ink-400">AI-Powered Learning &amp; SAT Prep</p>
         </div>
       </div>
     </div>
