@@ -15,8 +15,10 @@ import type {
 import WelcomeScreen from '@/screens/WelcomeScreen';
 import SetupScreen from '@/screens/SetupScreen';
 import LearningHome from '@/screens/LearningHome';
+import LearnScreen from '@/screens/LearnScreen';
 import ScanScreen from '@/screens/ScanScreen';
 import TopicDetails from '@/screens/TopicDetails';
+import TopicLessonScreen from '@/screens/TopicLessonScreen';
 import ProgressScreen from '@/screens/ProgressScreen';
 import ProfileScreen from '@/screens/ProfileScreen';
 import DiagnosticScreen from '@/screens/DiagnosticScreen';
@@ -30,6 +32,7 @@ type Overlay =
   | null
   | { name: 'scan' }
   | { name: 'topic'; topic: TopicInfo }
+  | { name: 'lesson'; topic: TopicInfo }
   | { name: 'diagnostic'; scope: Scope }
   | { name: 'diagnosticResults'; scope: Scope }
   | { name: 'studyPlan'; scope: Scope }
@@ -218,7 +221,6 @@ export default function App() {
   const renderTab = () => {
     switch (tab) {
       case 'home':
-      case 'learn':
         return (
           <LearningHome
             profile={profile}
@@ -242,6 +244,17 @@ export default function App() {
             onBuildSatPlan={handleBuildSatPlan}
             onViewSatPlan={() => setOverlay({ name: 'studyPlan', scope: 'sat' })}
             onDismissSatNudge={() => studyData.saveSatNudge(null)}
+          />
+        );
+      case 'learn':
+        return (
+          <LearnScreen
+            plan={studyData.plan}
+            satPlan={studyData.satPlan}
+            diagnosticDone={!!studyData.diagnostic}
+            satDiagnosticDone={!!studyData.satDiagnostic}
+            onOpenTopic={handleOpenPlanTopic}
+            onGoHome={() => setTab('home')}
           />
         );
       case 'progress':
@@ -278,10 +291,21 @@ export default function App() {
               studyData.satPlan?.items.find((i) => i.topicCode === overlay.topic.code)?.reason
             }
             onBack={goHome}
+            onOpenLesson={() => setOverlay({ name: 'lesson', topic: overlay.topic })}
             onPractice={(mode) =>
               setOverlay({ name: 'practice', topicCode: overlay.topic.code, mode })
             }
             onMakeStudyPlan={() => handleMakeStudyPlanFromTopic(overlay.topic)}
+          />
+        )}
+        {overlay?.name === 'lesson' && (
+          <TopicLessonScreen
+            topic={overlay.topic}
+            language={profile.language}
+            onBack={goHome}
+            onPractice={() =>
+              setOverlay({ name: 'practice', topicCode: overlay.topic.code, mode: 'practice' })
+            }
           />
         )}
         {overlay?.name === 'diagnostic' && (
@@ -299,6 +323,7 @@ export default function App() {
             masteries={studyData.progress.masteries.filter((m) =>
               overlay.scope === 'sat' ? isSatSubject(m.subject) : !isSatSubject(m.subject)
             )}
+            language={profile.language}
             title={overlay.scope === 'sat' ? 'Your SAT Results' : 'Your Results'}
             onBuildPlan={overlay.scope === 'sat' ? handleBuildSatPlan : handleBuildPlan}
             onBack={goHome}
