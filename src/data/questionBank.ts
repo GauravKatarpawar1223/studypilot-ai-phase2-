@@ -953,9 +953,16 @@ export const QUESTION_BANK: Record<string, BankQuestion[]> = {
 };
 
 /** Topics matching the student's chosen subjects; falls back to the full bank if none match. */
+/** Topics matching the student's chosen subjects; falls back to the full
+ * general-subject bank if none match (SAT skills are always excluded from
+ * this fallback — SAT prep has its own dedicated getSatTopics()/
+ * getSatDiagnosticQuestions() functions, so a student whose subjects don't
+ * match any general topic should never have SAT content silently mixed
+ * into their general diagnostic). */
 export function getTopicsForSubjects(subjects: string[]): TopicInfo[] {
   const matched = Object.values(TOPIC_BANK).filter((t) => subjects.includes(t.subject));
-  return matched.length > 0 ? matched : Object.values(TOPIC_BANK);
+  if (matched.length > 0) return matched;
+  return Object.values(TOPIC_BANK).filter((t) => !isSatSubject(t.subject));
 }
 
 /** Builds a compact diagnostic question set spanning the student's matched topics.
