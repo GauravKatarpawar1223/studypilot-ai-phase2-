@@ -1,5 +1,7 @@
 import type { TopicInfo } from '@/types';
 
+export const BOARDS = ['CBSE', 'State Board'] as const;
+
 export const GRADES = [
   'Class 6',
   'Class 7',
@@ -32,6 +34,7 @@ export const DEMO_TOPIC: TopicInfo = {
   chapter: 'Quadratic Equations',
   topic: 'Solving Quadratic Equations by Factorization',
   code: 'MATH10-QE-01',
+  board: 'CBSE',
 };
 
 export const DEMO_CODES: Record<string, TopicInfo> = {
@@ -42,6 +45,7 @@ export const DEMO_CODES: Record<string, TopicInfo> = {
     chapter: 'Light — Reflection and Refraction',
     topic: 'Laws of Reflection',
     code: 'SCI10-LIGHT-02',
+    board: 'CBSE',
   },
   'ENG9-POEM-03': {
     subject: 'English',
@@ -49,5 +53,6 @@ export const DEMO_CODES: Record<string, TopicInfo> = {
     chapter: 'Poetry',
     topic: 'The Road Not Taken',
     code: 'ENG9-POEM-03',
+    board: 'CBSE',
   },
 };

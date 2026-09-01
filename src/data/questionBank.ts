@@ -1,4 +1,4 @@
-import type { Language, SkillDifficulty, TopicInfo } from '@/types';
+import type { Board, Language, SkillDifficulty, TopicInfo } from '@/types';
 
 export interface BankQuestion {
   id: string;
@@ -36,6 +36,7 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     chapter: 'Quadratic Equations',
     topic: 'Solving Quadratic Equations by Factorization',
     code: 'MATH10-QE-01',
+    board: 'CBSE',
   },
   'MATH9-LE-01': {
     subject: 'Mathematics',
@@ -43,6 +44,7 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     chapter: 'Linear Equations',
     topic: 'Linear Equations in Two Variables',
     code: 'MATH9-LE-01',
+    board: 'CBSE',
   },
   'SCI10-LIGHT-02': {
     subject: 'Science',
@@ -50,6 +52,7 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     chapter: 'Light — Reflection and Refraction',
     topic: 'Laws of Reflection',
     code: 'SCI10-LIGHT-02',
+    board: 'CBSE',
   },
   'SCI10-ACID-01': {
     subject: 'Science',
@@ -57,6 +60,7 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     chapter: 'Acids, Bases and Salts',
     topic: 'Properties of Acids and Bases',
     code: 'SCI10-ACID-01',
+    board: 'CBSE',
   },
   'ENG9-POEM-03': {
     subject: 'English',
@@ -64,6 +68,7 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     chapter: 'Poetry',
     topic: 'The Road Not Taken',
     code: 'ENG9-POEM-03',
+    board: 'CBSE',
   },
   'ENG8-GRAM-01': {
     subject: 'English',
@@ -71,6 +76,7 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     chapter: 'Grammar',
     topic: 'Tenses',
     code: 'ENG8-GRAM-01',
+    board: 'CBSE',
   },
 
   /* --- SAT prep skills (Phase 4) --- */
@@ -952,31 +958,40 @@ export const QUESTION_BANK: Record<string, BankQuestion[]> = {
   ],
 };
 
-/** Topics matching the student's chosen subjects; falls back to the full bank if none match. */
-/** Topics matching the student's chosen subjects; falls back to the full
- * general-subject bank if none match (SAT skills are always excluded from
- * this fallback — SAT prep has its own dedicated getSatTopics()/
- * getSatDiagnosticQuestions() functions, so a student whose subjects don't
- * match any general topic should never have SAT content silently mixed
- * into their general diagnostic). */
-export function getTopicsForSubjects(subjects: string[]): TopicInfo[] {
-  const matched = Object.values(TOPIC_BANK).filter((t) => subjects.includes(t.subject));
-  if (matched.length > 0) return matched;
-  return Object.values(TOPIC_BANK).filter((t) => !isSatSubject(t.subject));
+/**
+ * Topics matching the student's exact board + class + subjects. This is a
+ * STRICT match on all three — there is deliberately NO fallback to a
+ * different grade or board. Showing a Class 10 topic to a Class 12 student
+ * (or CBSE content to a State Board student) is treated as a correctness
+ * bug, not a convenience — an empty result here means the calling screen
+ * must show an honest "content not available yet" state instead of
+ * silently substituting mismatched content.
+ *
+ * SAT topics are never returned here — SAT is a fully separate track with
+ * its own getSatTopics()/getSatDiagnosticQuestions() below.
+ */
+export function getTopicsForSubjects(subjects: string[], board: Board, grade: string): TopicInfo[] {
+  return Object.values(TOPIC_BANK).filter(
+    (t) => !isSatSubject(t.subject) && t.board === board && t.grade === grade && subjects.includes(t.subject)
+  );
 }
 
-/** Builds a compact diagnostic question set spanning the student's matched topics.
- * maxTopics defaults to the full bank size so a student's diagnostic always
- * covers every topic matching their selected subjects (important so the
- * later study plan, which is built from diagnosed topics, never has to
- * silently drop a subject the student picked).
+/** Builds a compact diagnostic question set spanning the student's exact
+ * board + class + subject matches. maxTopics defaults to the full bank size
+ * so a student's diagnostic always covers every topic matching their
+ * selected subjects (important so the later study plan, which is built
+ * from diagnosed topics, never has to silently drop a subject the student
+ * picked). Returns an empty array — never mismatched content — if nothing
+ * matches the student's exact board/class/subjects.
  */
 export function getDiagnosticQuestions(
   subjects: string[],
+  board: Board,
+  grade: string,
   maxTopics = 6,
   perTopic = 3
 ): BankQuestion[] {
-  const topics = getTopicsForSubjects(subjects).slice(0, maxTopics);
+  const topics = getTopicsForSubjects(subjects, board, grade).slice(0, maxTopics);
   const questions: BankQuestion[] = [];
   topics.forEach((t) => {
     const bank = QUESTION_BANK[t.code] ?? [];
@@ -1005,4 +1020,36 @@ export function getSatDiagnosticQuestions(perTopic = 3): BankQuestion[] {
     questions.push(...bank.slice(0, perTopic));
   });
   return questions;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Phase 2B: separate Practice and Quiz question pools                    */
+/* ---------------------------------------------------------------------- */
+
+/**
+ * Practice and Quiz must never show the same question for the same topic.
+ * Rather than storing (and hand-maintaining) two duplicated question lists
+ * per topic, both pools are DERIVED from the existing QUESTION_BANK by a
+ * simple, deterministic, provably-disjoint split: even-indexed questions
+ * go to Practice, odd-indexed go to Quiz. No question content changes, no
+ * new stored data — this is a pure view over the same source questions.
+ *
+ * This scales automatically as more real questions are added per topic
+ * later (each pool just gets its fair share), and it applies uniformly to
+ * every topic — general subjects and SAT skills alike — so SAT stays on
+ * exactly the same footing as school topics without any special-casing.
+ *
+ * Practice is the learning-oriented pool: PracticeScreen reveals the
+ * correct answer and explanation immediately after each question. Quiz is
+ * the assessment-oriented pool: PracticeScreen withholds feedback until
+ * the whole quiz is submitted, then shows a full review.
+ */
+export function getPracticeQuestions(topicCode: string): BankQuestion[] {
+  const bank = QUESTION_BANK[topicCode] ?? [];
+  return bank.filter((_, i) => i % 2 === 0);
+}
+
+export function getQuizQuestions(topicCode: string): BankQuestion[] {
+  const bank = QUESTION_BANK[topicCode] ?? [];
+  return bank.filter((_, i) => i % 2 === 1);
 }
