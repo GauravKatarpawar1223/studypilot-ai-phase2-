@@ -1,4 +1,4 @@
-import { User, GraduationCap, BookOpen, Languages, Clock, RefreshCw, LogOut, type LucideIcon } from 'lucide-react';
+import { User, GraduationCap, BookOpen, Languages, Clock, RefreshCw, LogOut, Award, type LucideIcon } from 'lucide-react';
 import Logo from '@/components/Logo';
 import type { StudentProfile } from '@/types';
 
@@ -22,6 +22,7 @@ export default function ProfileScreen({ profile, onEditSetup, onSignOut }: Props
       </div>
 
       <div className="mt-6 card divide-y divide-ink-100">
+        <InfoRow icon={Award} label="Board" value={profile.board} />
         <InfoRow icon={GraduationCap} label="Class" value={profile.grade} />
         <InfoRow
           icon={BookOpen}

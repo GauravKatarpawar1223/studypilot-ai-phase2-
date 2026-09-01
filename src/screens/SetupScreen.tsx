@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Check, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import Logo from '@/components/Logo';
-import { GRADES, SUBJECTS, LANGUAGES, STUDY_TIMES } from '@/data/demoData';
-import type { Language, StudentProfile, StudyTime } from '@/types';
+import { BOARDS, GRADES, SUBJECTS, LANGUAGES, STUDY_TIMES } from '@/data/demoData';
+import type { Board, Language, StudentProfile, StudyTime } from '@/types';
 
 interface Props {
   existing: StudentProfile | null;
@@ -10,11 +10,12 @@ interface Props {
   onCancel: () => void;
 }
 
-const STEPS = ['Name', 'Class', 'Subjects', 'Language', 'Study time'] as const;
+const STEPS = ['Name', 'Board', 'Class', 'Subjects', 'Language', 'Study time'] as const;
 
 export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
   const [step, setStep] = useState(0);
   const [name, setName] = useState(existing?.name ?? '');
+  const [board, setBoard] = useState<Board | ''>(existing?.board ?? '');
   const [grade, setGrade] = useState(existing?.grade ?? '');
   const [subjects, setSubjects] = useState<string[]>(existing?.subjects ?? []);
   const [language, setLanguage] = useState<Language>(existing?.language ?? 'English');
@@ -29,12 +30,14 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
       case 0:
         return name.trim().length > 0;
       case 1:
-        return !!grade;
+        return !!board;
       case 2:
-        return subjects.length > 0;
+        return !!grade;
       case 3:
-        return !!language;
+        return subjects.length > 0;
       case 4:
+        return !!language;
+      case 5:
         return !!studyTime;
       default:
         return false;
@@ -42,12 +45,13 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
   })();
 
   const next = () => {
-    if (!canProceed) return;
+    if (!canProceed || !board) return;
     if (step < STEPS.length - 1) {
       setStep(step + 1);
     } else {
       onComplete({
         name: name.trim(),
+        board,
         grade,
         subjects,
         language,
@@ -106,6 +110,23 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
         )}
 
         {step === 1 && (
+          <StepShell title="Select your board" subtitle="We'll match your curriculum exactly.">
+            <div className="space-y-3">
+              {BOARDS.map((b) => (
+                <button
+                  key={b}
+                  onClick={() => setBoard(b)}
+                  className={`chip ${board === b ? 'chip-on' : 'chip-off'} flex w-full items-center justify-between px-5`}
+                >
+                  <span className="text-left text-base">{b}</span>
+                  {board === b && <Check className="h-5 w-5" />}
+                </button>
+              ))}
+            </div>
+          </StepShell>
+        )}
+
+        {step === 2 && (
           <StepShell title="Select your class" subtitle="We'll match lessons to your level.">
             <div className="grid grid-cols-2 gap-3">
               {GRADES.map((g) => (
@@ -121,7 +142,7 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
           </StepShell>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <StepShell
             title="Pick your subjects"
             subtitle="Choose all the subjects you want to study."
@@ -141,7 +162,7 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
           </StepShell>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <StepShell
             title="Preferred language"
             subtitle="Lessons and explanations in your language."
@@ -161,7 +182,7 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
           </StepShell>
         )}
 
-        {step === 4 && (
+        {step === 5 && (
           <StepShell
             title="Daily study time"
             subtitle="We'll plan sessions that fit your day."

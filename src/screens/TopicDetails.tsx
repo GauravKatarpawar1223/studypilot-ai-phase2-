@@ -127,6 +127,7 @@ export default function TopicDetails({
         </div>
 
         <dl className="mt-5 divide-y divide-ink-100">
+          {topic.board && <Row label="Board" value={topic.board} />}
           <Row label="Subject" value={topic.subject} />
           <Row label="Class" value={topic.grade} />
           <Row label="Chapter" value={topic.chapter} />

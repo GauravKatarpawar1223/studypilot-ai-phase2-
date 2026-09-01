@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import QuestionCard from '@/components/QuestionCard';
 import { getDiagnosticQuestions, getSatDiagnosticQuestions } from '@/data/questionBank';
-import type { DiagnosticAnswer, Language } from '@/types';
+import type { Board, DiagnosticAnswer, Language } from '@/types';
 
 interface Props {
   subjects: string[];
+  board: Board;
+  grade: string;
   language: Language;
   /** 'sat' pulls the SAT skill bank regardless of `subjects`; 'subjects' (default) is the Phase 2/3 behavior. */
   mode?: 'subjects' | 'sat';
@@ -16,6 +18,8 @@ interface Props {
 
 export default function DiagnosticScreen({
   subjects,
+  board,
+  grade,
   language,
   mode = 'subjects',
   title = 'Diagnostic Assessment',
@@ -23,8 +27,8 @@ export default function DiagnosticScreen({
   onBack,
 }: Props) {
   const questions = useMemo(
-    () => (mode === 'sat' ? getSatDiagnosticQuestions() : getDiagnosticQuestions(subjects)),
-    [mode, subjects]
+    () => (mode === 'sat' ? getSatDiagnosticQuestions() : getDiagnosticQuestions(subjects, board, grade)),
+    [mode, subjects, board, grade]
   );
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<DiagnosticAnswer[]>([]);
@@ -62,7 +66,11 @@ export default function DiagnosticScreen({
   if (!q) {
     return (
       <div className="flex min-h-full flex-col items-center justify-center px-5 text-center">
-        <p className="text-ink-600">No diagnostic questions are available yet.</p>
+        <p className="text-ink-600">
+          {mode === 'sat'
+            ? 'No diagnostic questions are available yet.'
+            : "Learning content for your selected board, class, and subjects is being prepared. Try SAT Prep from Home, or check back soon."}
+        </p>
         <button onClick={onBack} className="btn-secondary mt-6">
           Go Back
         </button>

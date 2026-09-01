@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { ChevronLeft, Trophy, Target } from 'lucide-react';
+import { ChevronLeft, Trophy, Target, Check, X } from 'lucide-react';
 import QuestionCard from '@/components/QuestionCard';
-import { QUESTION_BANK, TOPIC_BANK } from '@/data/questionBank';
+import { getPracticeQuestions, getQuizQuestions, TOPIC_BANK } from '@/data/questionBank';
 import type { DiagnosticAnswer, Language, PracticeSession, SkillDifficulty } from '@/types';
 
 interface Props {
@@ -23,6 +23,13 @@ const DIFFICULTY_LABEL: Record<Language, Record<SkillDifficulty, string>> = {
   Marathi: { easy: 'सोपे', medium: 'सर्वसाधारण', hard: 'अवघड' },
 };
 
+/** Short caption clarifying what makes each mode different — the only new
+ * UI text added for Phase 2B, kept intentionally minimal. */
+const MODE_CAPTION: Record<'practice' | 'quiz', string> = {
+  practice: 'Instant feedback after each question',
+  quiz: 'Answer everything first — see results at the end',
+};
+
 export default function PracticeScreen({
   topicCode,
   mode,
@@ -32,9 +39,10 @@ export default function PracticeScreen({
   onBack,
 }: Props) {
   const topicInfo = TOPIC_BANK[topicCode];
+  const title = mode === 'quiz' ? 'Quiz Me' : 'Practice';
 
   const questions = useMemo(() => {
-    const bank = QUESTION_BANK[topicCode] ?? [];
+    const bank = mode === 'quiz' ? getQuizQuestions(topicCode) : getPracticeQuestions(topicCode);
     if (!recommendedDifficulty) return bank;
     // Stable partition: matching-difficulty questions first, rest keep their order.
     return [...bank].sort((a, b) => {
@@ -42,7 +50,7 @@ export default function PracticeScreen({
       const bMatch = b.difficulty === recommendedDifficulty ? 0 : 1;
       return aMatch - bMatch;
     });
-  }, [topicCode, recommendedDifficulty]);
+  }, [topicCode, mode, recommendedDifficulty]);
 
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<DiagnosticAnswer[]>([]);
@@ -52,11 +60,13 @@ export default function PracticeScreen({
 
   const q = questions[index];
   const isLast = index === questions.length - 1;
-  const title = mode === 'quiz' ? 'Quiz Me' : 'Practice';
 
   const handleSelect = (i: number) => {
     setSelected(i);
-    setRevealed(true);
+    // Practice reveals correctness immediately (learning-oriented). Quiz
+    // withholds feedback until the whole quiz is submitted (assessment-
+    // oriented) — the student only sees their choice was recorded.
+    if (mode === 'practice') setRevealed(true);
   };
 
   const handleNext = () => {
@@ -113,7 +123,36 @@ export default function PracticeScreen({
             ? "Good progress — a bit more practice will help."
             : "That's okay — this topic needs more focus. It's staying in your plan."}
         </p>
-        <button onClick={handleFinish} className="btn-primary mt-auto w-full">
+
+        {mode === 'quiz' && (
+          <div className="mt-6 w-full space-y-2.5 text-left">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Review</p>
+            {questions.map((question, i) => {
+              const a = answers[i];
+              const isCorrect = a?.correct;
+              return (
+                <div key={question.id} className="card py-3">
+                  <div className="flex items-start gap-2.5">
+                    {isCorrect ? (
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                    ) : (
+                      <X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                    )}
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-ink-900">{question.question}</p>
+                      <p className="mt-1 text-xs text-ink-500">
+                        Correct answer: {question.options[question.correctIndex]}
+                      </p>
+                      <p className="mt-1.5 text-xs text-ink-600">{question.explanation[language]}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <button onClick={handleFinish} className="btn-primary mt-6 w-full">
           Done
         </button>
       </div>
@@ -123,7 +162,9 @@ export default function PracticeScreen({
   if (!q) {
     return (
       <div className="flex min-h-full flex-col items-center justify-center px-5 text-center">
-        <p className="text-ink-600">No practice questions are available for this topic yet.</p>
+        <p className="text-ink-600">
+          No {mode === 'quiz' ? 'quiz' : 'practice'} questions are available for this topic yet.
+        </p>
         <button onClick={onBack} className="btn-secondary mt-6">
           Go Back
         </button>
@@ -154,6 +195,8 @@ export default function PracticeScreen({
           </span>
         )}
       </header>
+
+      <p className="mt-2 text-xs text-ink-400">{MODE_CAPTION[mode]}</p>
 
       <div className="mt-4 flex gap-1.5">
         {questions.map((_, i) => (
