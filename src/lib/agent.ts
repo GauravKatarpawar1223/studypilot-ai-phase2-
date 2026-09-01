@@ -132,7 +132,7 @@ function buildFallbackPlan(
           topic: m.topic,
           chapter: m.chapter,
         }))
-      : getTopicsForSubjects(profile.subjects).map((t) => ({
+      : getTopicsForSubjects(profile.subjects, profile.board, profile.grade).map((t) => ({
           code: t.code,
           subject: t.subject,
           topic: t.topic,
