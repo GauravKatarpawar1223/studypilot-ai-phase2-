@@ -2,8 +2,13 @@ export type Language = 'English' | 'Hindi' | 'Marathi';
 
 export type StudyTime = '15 min' | '30 min' | '60 min' | '90+ min';
 
+/** The curriculum board the student's class/subjects belong to. SAT prep is
+ * a separate track (see LearningScope below) and doesn't use this field. */
+export type Board = 'CBSE' | 'State Board';
+
 export interface StudentProfile {
   name: string;
+  board: Board;
   grade: string;
   subjects: string[];
   language: Language;
@@ -17,6 +22,10 @@ export interface TopicInfo {
   chapter: string;
   topic: string;
   code: string;
+  /** Which curriculum board this topic belongs to. Only meaningful for
+   * general-subject topics — SAT topics leave this undefined since SAT is
+   * an intentionally separate track, not part of the board/class system. */
+  board?: Board;
 }
 
 /* ---------------------------------------------------------------------- */

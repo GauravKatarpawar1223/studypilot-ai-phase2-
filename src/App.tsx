@@ -311,6 +311,8 @@ export default function App() {
         {overlay?.name === 'diagnostic' && (
           <DiagnosticScreen
             subjects={profile.subjects}
+            board={profile.board}
+            grade={profile.grade}
             language={profile.language}
             mode={overlay.scope === 'sat' ? 'sat' : 'subjects'}
             title={overlay.scope === 'sat' ? 'SAT Diagnostic' : 'Diagnostic Assessment'}
