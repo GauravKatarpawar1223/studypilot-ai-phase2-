@@ -45,20 +45,21 @@ export default function SetupScreen({ existing, onComplete, onCancel }: Props) {
   })();
 
   const next = () => {
-    if (!canProceed || !board) return;
+    if (!canProceed) return;
     if (step < STEPS.length - 1) {
       setStep(step + 1);
-    } else {
-      onComplete({
-        name: name.trim(),
-        board,
-        grade,
-        subjects,
-        language,
-        studyTime,
-        createdAt: existing?.createdAt ?? Date.now(),
-      });
+      return;
     }
+    if (!board) return;
+    onComplete({
+      name: name.trim(),
+      board,
+      grade,
+      subjects,
+      language,
+      studyTime,
+      createdAt: existing?.createdAt ?? Date.now(),
+    });
   };
 
   const back = () => {
