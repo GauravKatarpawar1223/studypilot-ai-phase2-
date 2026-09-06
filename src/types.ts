@@ -26,6 +26,14 @@ export interface TopicInfo {
    * general-subject topics — SAT topics leave this undefined since SAT is
    * an intentionally separate track, not part of the board/class system. */
   board?: Board;
+  /** Optional finer-grained subdivision within a topic. Not used by any
+   * current logic — present so future content can add subtopic-level
+   * granularity without a schema change. */
+  subtopic?: string;
+  /** Optional topic codes that should ideally be learned before this one.
+   * Not enforced by any current logic — a hook for a future "recommend
+   * prerequisites first" feature. */
+  prerequisiteCodes?: string[];
 }
 
 /* ---------------------------------------------------------------------- */
@@ -142,3 +150,26 @@ export interface DailyGoals {
  * filtered by subject prefix for SAT-specific views.
  */
 export type LearningScope = 'general' | 'sat';
+
+/* ---------------------------------------------------------------------- */
+/* Phase 3 (this session): learning-resource foundation                   */
+/* ---------------------------------------------------------------------- */
+
+export type ResourceType = 'video' | 'article' | 'other';
+
+/**
+ * One external learning resource for a specific topic. No resource
+ * provider exists yet — this type only defines the SHAPE a real,
+ * dynamically-retrieved resource will have once one is connected (a later
+ * phase). Nothing in the app currently constructs a LearningResource with
+ * a real, live URL — see lib/resources.ts for why.
+ */
+export interface LearningResource {
+  title: string;
+  url: string;
+  type: ResourceType;
+  /** Where this resource comes from (e.g. a provider/site name), for display only. */
+  source?: string;
+  /** Which language this specific resource is in, if known. */
+  language?: Language;
+}

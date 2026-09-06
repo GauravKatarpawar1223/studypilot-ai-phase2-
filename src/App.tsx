@@ -229,6 +229,10 @@ export default function App() {
             nudge={studyData.nudge}
             dailyGoals={studyData.dailyGoals}
             buildingPlan={buildingPlan}
+            weakTopics={studyData.progress.masteries
+              .filter((m) => m.status === 'weak' && !isSatSubject(m.subject))
+              .sort((a, b) => a.scorePct - b.scorePct)
+              .slice(0, 2)}
             satDiagnosticDone={!!studyData.satDiagnostic}
             satPlan={studyData.satPlan}
             satNudge={studyData.satNudge}
