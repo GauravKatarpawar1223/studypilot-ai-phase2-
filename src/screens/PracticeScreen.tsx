@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ChevronLeft, Trophy, Target, Check, X } from 'lucide-react';
 import QuestionCard from '@/components/QuestionCard';
 import { getPracticeQuestions, getQuizQuestions, TOPIC_BANK } from '@/data/questionBank';
+import { MASTERY_THRESHOLDS } from '@/lib/mastery';
 import type { DiagnosticAnswer, Language, PracticeSession, SkillDifficulty } from '@/types';
 
 interface Props {
@@ -117,9 +118,9 @@ export default function PracticeScreen({
           {topicInfo?.topic ?? 'This topic'} · {scorePct}% score
         </p>
         <p className="mt-6 text-sm text-ink-600">
-          {scorePct >= 80
+          {scorePct >= MASTERY_THRESHOLDS.strong
             ? "Great job! You're mastering this topic."
-            : scorePct >= 50
+            : scorePct >= MASTERY_THRESHOLDS.developing
             ? "Good progress — a bit more practice will help."
             : "That's okay — this topic needs more focus. It's staying in your plan."}
         </p>

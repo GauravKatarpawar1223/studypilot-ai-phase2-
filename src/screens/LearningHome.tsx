@@ -12,10 +12,19 @@ import {
   ListChecks,
   Pencil,
   Award,
+  Target,
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { TOPIC_BANK, getTopicMeta, QUESTION_BANK } from '@/data/questionBank';
-import type { AdaptiveNudge, DailyGoals, Language, StudentProfile, StudyPlan, TopicInfo } from '@/types';
+import type {
+  AdaptiveNudge,
+  DailyGoals,
+  Language,
+  StudentProfile,
+  StudyPlan,
+  TopicInfo,
+  TopicMastery,
+} from '@/types';
 
 interface Props {
   profile: StudentProfile;
@@ -24,6 +33,10 @@ interface Props {
   nudge: AdaptiveNudge | null;
   dailyGoals: DailyGoals | null;
   buildingPlan: boolean;
+  /** Top weak general-subject topics from the diagnostic, already sorted
+   * and limited by the caller — shown immediately after diagnostic
+   * completion, before the student has necessarily built a full plan. */
+  weakTopics: TopicMastery[];
   onScan: () => void;
   onProgress: () => void;
   onTopic: (t: TopicInfo) => void;
@@ -70,6 +83,12 @@ const GOALS_HEADING: Record<Language, string> = {
   English: "Today's Goals",
   Hindi: 'आज के लक्ष्य',
   Marathi: 'आजची उद्दिष्टे',
+};
+
+const FOCUS_LABELS: Record<Language, { heading: string; startLearning: string }> = {
+  English: { heading: 'Your Learning Focus', startLearning: 'Start Learning' },
+  Hindi: { heading: 'आपका ध्यान केंद्रित करने का क्षेत्र', startLearning: 'सीखना शुरू करें' },
+  Marathi: { heading: 'तुमचे लक्ष केंद्रित करण्याचे क्षेत्र', startLearning: 'शिकायला सुरुवात करा' },
 };
 
 const PLAN_CHANGED_HEADING: Record<Language, string> = {
@@ -218,6 +237,7 @@ export default function LearningHome({
   nudge,
   dailyGoals,
   buildingPlan,
+  weakTopics,
   onScan,
   onProgress,
   onTopic,
@@ -340,7 +360,37 @@ export default function LearningHome({
           </div>
         </section>
       ) : !plan ? (
-        <section className="mt-5">
+        <section className="mt-5 space-y-3">
+          {weakTopics.length > 0 && (
+            <div className="card">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-red-500" />
+                <p className="text-sm font-semibold text-ink-800">{FOCUS_LABELS[profile.language].heading}</p>
+              </div>
+              <div className="mt-3 space-y-2.5">
+                {weakTopics.map((m) => {
+                  const topicInfo = TOPIC_BANK[m.topicCode];
+                  if (!topicInfo) return null;
+                  return (
+                    <button
+                      key={m.topicCode}
+                      onClick={() => onTopic(topicInfo)}
+                      className="flex w-full items-center justify-between rounded-xl bg-red-50 px-3.5 py-3 text-left active:scale-[0.99]"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-ink-900">{m.topic}</p>
+                        <p className="text-xs text-ink-500">{m.subject} · {m.chapter}</p>
+                      </div>
+                      <span className="flex shrink-0 items-center gap-1 text-xs font-semibold text-red-600">
+                        {FOCUS_LABELS[profile.language].startLearning}
+                        <ChevronRight className="h-4 w-4" />
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="card">
             <p className="text-sm font-bold text-ink-900">Your diagnostic is ready</p>
             <p className="mt-1.5 text-sm text-ink-600">
@@ -358,7 +408,7 @@ export default function LearningHome({
         </section>
       ) : (
         <section className="mt-5">
-          <p className="mb-2.5 text-sm font-semibold text-ink-700">Today's recommended topic</p>
+          <p className="mb-2.5 text-sm font-semibold text-ink-700">Your Learning Focus</p>
           {nextTopic ? (
             <button
               onClick={() => onTopic(nextTopic)}
@@ -369,8 +419,8 @@ export default function LearningHome({
                   <BookOpen className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-ink-900">{nextTopic.chapter}</p>
-                  <p className="text-xs text-ink-500">{nextTopic.subject} · {nextTopic.grade}</p>
+                  <p className="text-sm font-bold text-ink-900">{nextTopic.topic}</p>
+                  <p className="text-xs text-ink-500">{nextTopic.subject} → {nextTopic.chapter}</p>
                 </div>
                 <ChevronRight className="h-5 w-5 shrink-0 text-ink-300" />
               </div>
