@@ -291,6 +291,141 @@ export const LESSON_CONTENT: Record<string, LessonContent> = {
     },
   },
 
+  'PHY10-MOTION-01': {
+    concept: {
+      English:
+        'Speed tells you how fast something moves. Velocity adds direction to speed. Acceleration tells you how quickly velocity is changing.',
+      Hindi:
+        'चाल बताती है कि कोई चीज़ कितनी तेज़ चलती है। वेग चाल में दिशा जोड़ता है। त्वरण बताता है कि वेग कितनी तेज़ी से बदल रहा है।',
+      Marathi:
+        'वेग सांगतो की एखादी वस्तू किती वेगाने फिरते. गती वेगामध्ये दिशा जोडते. प्रवेग सांगतो की गती किती वेगाने बदलत आहे.',
+    },
+    keyPoints: {
+      English: [
+        'Speed = distance ÷ time',
+        'Velocity = speed in a specific direction',
+        'Acceleration = change in velocity ÷ time',
+        'SI units: speed & velocity in m/s, acceleration in m/s²',
+      ],
+      Hindi: [
+        'चाल = दूरी ÷ समय',
+        'वेग = एक निश्चित दिशा में चाल',
+        'त्वरण = वेग में परिवर्तन ÷ समय',
+        'SI मात्रक: चाल और वेग m/s में, त्वरण m/s² में',
+      ],
+      Marathi: [
+        'वेग = अंतर ÷ वेळ',
+        'गती = ठराविक दिशेतील वेग',
+        'प्रवेग = गतीतील बदल ÷ वेळ',
+        'SI एकके: वेग व गती m/s मध्ये, प्रवेग m/s² मध्ये',
+      ],
+    },
+    example: {
+      English:
+        'A cyclist covers 30 km in 2 hours travelling due north. Their speed is 15 km/h, and their velocity is 15 km/h north.',
+      Hindi:
+        'एक साइकिल चालक उत्तर दिशा में 2 घंटे में 30 किमी तय करता है। उसकी चाल 15 किमी/घंटा है, और उसका वेग 15 किमी/घंटा उत्तर है।',
+      Marathi:
+        'एक सायकलस्वार उत्तर दिशेने 2 तासांत 30 किमी अंतर पार करतो. त्याचा वेग 15 किमी/तास आहे, आणि गती 15 किमी/तास उत्तर आहे.',
+    },
+    commonMistake: {
+      English: "Using 'speed' and 'velocity' as if they mean exactly the same thing — velocity always needs a direction.",
+      Hindi: "'चाल' और 'वेग' को एक जैसा मान लेना — वेग के लिए हमेशा एक दिशा चाहिए।",
+      Marathi: "'वेग' आणि 'गती' यांना सारखेच समजणे — गतीसाठी नेहमी दिशा आवश्यक असते.",
+    },
+  },
+
+  'CHEM10-METALS-01': {
+    concept: {
+      English:
+        'When a metal reacts with a non-metal, the metal atom loses electrons and the non-metal atom gains them, forming charged ions that attract each other to make an ionic compound.',
+      Hindi:
+        'जब एक धातु एक अधातु के साथ अभिक्रिया करती है, तो धातु परमाणु इलेक्ट्रॉन खो देता है और अधातु परमाणु उन्हें प्राप्त करता है, जिससे आवेशित आयन बनते हैं जो एक-दूसरे को आकर्षित कर आयनिक यौगिक बनाते हैं।',
+      Marathi:
+        'जेव्हा धातू अधातूशी अभिक्रिया करते, तेव्हा धातूचा अणू इलेक्ट्रॉन गमावतो आणि अधातूचा अणू ते मिळवतो, त्यामुळे भारित आयन तयार होतात जे एकमेकांना आकर्षित करून आयनिक संयुग तयार करतात.',
+    },
+    keyPoints: {
+      English: [
+        'Metals lose electrons to form positive ions (cations)',
+        'Non-metals gain electrons to form negative ions (anions)',
+        'Opposite charges attract, holding the compound together',
+        'Ionic compounds are solids with high melting points',
+      ],
+      Hindi: [
+        'धातुएं इलेक्ट्रॉन खोकर धनायन बनाती हैं',
+        'अधातुएं इलेक्ट्रॉन प्राप्त कर ऋणायन बनाती हैं',
+        'विपरीत आवेश एक-दूसरे को आकर्षित कर यौगिक को जोड़े रखते हैं',
+        'आयनिक यौगिक ठोस होते हैं जिनका गलनांक उच्च होता है',
+      ],
+      Marathi: [
+        'धातू इलेक्ट्रॉन गमावून धनायन तयार करतात',
+        'अधातू इलेक्ट्रॉन मिळवून ऋणायन तयार करतात',
+        'विरुद्ध विद्युतभार एकमेकांना आकर्षित करून संयुग एकत्र ठेवतात',
+        'आयनिक संयुगे घन असतात व त्यांचा वितळण बिंदू जास्त असतो',
+      ],
+    },
+    example: {
+      English:
+        'Sodium (Na) loses one electron to chlorine (Cl), forming Na⁺ and Cl⁻ ions that attract each other to form NaCl.',
+      Hindi:
+        'सोडियम (Na) क्लोरीन (Cl) को एक इलेक्ट्रॉन देता है, जिससे Na⁺ और Cl⁻ आयन बनते हैं जो एक-दूसरे को आकर्षित कर NaCl बनाते हैं।',
+      Marathi:
+        'सोडियम (Na) क्लोरिनला (Cl) एक इलेक्ट्रॉन देतो, त्यामुळे Na⁺ आणि Cl⁻ आयन तयार होतात जे एकमेकांना आकर्षित करून NaCl तयार करतात.',
+    },
+    commonMistake: {
+      English:
+        'Thinking electrons are "shared" in ionic bonding — they are fully transferred, not shared (sharing happens in covalent bonds).',
+      Hindi:
+        "यह सोचना कि आयनिक बंधन में इलेक्ट्रॉन 'साझा' होते हैं — वे पूरी तरह स्थानांतरित होते हैं, साझा नहीं (साझा करना सहसंयोजक बंधों में होता है)।",
+      Marathi:
+        "आयनिक बंधनात इलेक्ट्रॉन्स 'वाटले' जातात असे वाटणे — ते पूर्णपणे हस्तांतरित होतात, वाटले जात नाहीत (वाटणी सहसंयोजक बंधांमध्ये होते).",
+    },
+  },
+
+  'BIO9-CELL-01': {
+    concept: {
+      English:
+        'A cell is the basic unit of life. It has a plasma membrane, cytoplasm, and a nucleus, plus specialized organelles that each do a specific job.',
+      Hindi:
+        'कोशिका जीवन की मूल इकाई है। इसमें प्लाज़्मा झिल्ली, कोशिकाद्रव्य और केंद्रक होता है, साथ ही विशेष अंगक होते हैं जो अपना-अपना काम करते हैं।',
+      Marathi:
+        'पेशी ही जीवनाची मूलभूत एकक आहे. तिच्यात प्लाझ्मा पटल, पेशीद्रव्य आणि केंद्रक असतो, तसेच विशिष्ट कार्य करणारे पेशीअंग असतात.',
+    },
+    keyPoints: {
+      English: [
+        'Plasma membrane controls what enters/exits the cell',
+        'Nucleus contains DNA and controls cell activities',
+        'Mitochondria release energy for the cell',
+        'Cell wall (plants only) gives extra rigidity and protection',
+      ],
+      Hindi: [
+        'प्लाज़्मा झिल्ली कोशिका में प्रवेश/निकास को नियंत्रित करती है',
+        'केंद्रक में DNA होता है और यह कोशिका गतिविधियों को नियंत्रित करता है',
+        'माइटोकॉन्ड्रिया कोशिका के लिए ऊर्जा छोड़ते हैं',
+        'कोशिका भित्ति (केवल पौधों में) अतिरिक्त मजबूती और सुरक्षा देती है',
+      ],
+      Marathi: [
+        'प्लाझ्मा पटल पेशीत प्रवेश/बाहेर जाण्याचे नियंत्रण करते',
+        'केंद्रकात DNA असतो आणि तो पेशीच्या क्रियांवर नियंत्रण ठेवतो',
+        'माइटोकॉन्ड्रिया पेशीसाठी ऊर्जा सोडतात',
+        'पेशीभित्तिका (फक्त वनस्पतींमध्ये) अतिरिक्त मजबुती आणि संरक्षण देते',
+      ],
+    },
+    example: {
+      English:
+        'In a plant cell, the rigid cell wall surrounds the plasma membrane, giving the cell a fixed shape — unlike an animal cell, which has no cell wall.',
+      Hindi:
+        'पादप कोशिका में, कठोर कोशिका भित्ति प्लाज़्मा झिल्ली को घेरती है, जिससे कोशिका को एक निश्चित आकार मिलता है — जंतु कोशिका के विपरीत, जिसमें कोशिका भित्ति नहीं होती।',
+      Marathi:
+        'वनस्पती पेशीत, कठीण पेशीभित्तिका प्लाझ्मा पटलाभोवती असते, त्यामुळे पेशीला निश्चित आकार मिळतो — प्राणी पेशीच्या विपरीत, जिच्यात पेशीभित्तिका नसते.',
+    },
+    commonMistake: {
+      English: 'Confusing the cell membrane with the cell wall — every cell has a membrane, but only plant cells have a wall.',
+      Hindi: 'कोशिका झिल्ली को कोशिका भित्ति समझ लेना — हर कोशिका में झिल्ली होती है, पर केवल पादप कोशिकाओं में भित्ति होती है।',
+      Marathi: 'पेशी पटल आणि पेशीभित्तिका यांच्यात गोंधळ करणे — प्रत्येक पेशीला पटल असते, पण फक्त वनस्पती पेशींना भित्तिका असते.',
+    },
+  },
+
   'SAT-MATH-LINEQ-01': {
     concept: {
       English:

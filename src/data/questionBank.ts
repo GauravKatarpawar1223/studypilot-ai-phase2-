@@ -78,6 +78,30 @@ export const TOPIC_BANK: Record<string, TopicInfo> = {
     code: 'ENG8-GRAM-01',
     board: 'CBSE',
   },
+  'PHY10-MOTION-01': {
+    subject: 'Physics',
+    grade: 'Class 10',
+    chapter: 'Motion',
+    topic: 'Speed, Velocity and Acceleration',
+    code: 'PHY10-MOTION-01',
+    board: 'CBSE',
+  },
+  'CHEM10-METALS-01': {
+    subject: 'Chemistry',
+    grade: 'Class 10',
+    chapter: 'Metals and Non-Metals',
+    topic: 'Formation of Ionic Compounds',
+    code: 'CHEM10-METALS-01',
+    board: 'CBSE',
+  },
+  'BIO9-CELL-01': {
+    subject: 'Biology',
+    grade: 'Class 9',
+    chapter: 'The Fundamental Unit of Life',
+    topic: 'Cell Structure and Organelles',
+    code: 'BIO9-CELL-01',
+    board: 'CBSE',
+  },
 
   /* --- SAT prep skills (Phase 4) --- */
   'SAT-MATH-LINEQ-01': {
@@ -182,6 +206,30 @@ export const TOPIC_META: Record<string, TopicMeta> = {
       English: 'Practice using present, past, and future tenses correctly.',
       Hindi: 'वर्तमान, भूत और भविष्य काल का सही प्रयोग करने का अभ्यास करें।',
       Marathi: 'वर्तमान, भूत आणि भविष्यकाळाचा योग्य वापर करण्याचा सराव करा.',
+    },
+  },
+  'PHY10-MOTION-01': {
+    estimatedMinutes: 12,
+    summary: {
+      English: 'Learn the difference between speed, velocity, and acceleration with simple formulas.',
+      Hindi: 'चाल, वेग और त्वरण के बीच अंतर को सरल सूत्रों के साथ सीखें।',
+      Marathi: 'वेग, गती आणि प्रवेग यांच्यातील फरक सोप्या सूत्रांसह शिका.',
+    },
+  },
+  'CHEM10-METALS-01': {
+    estimatedMinutes: 12,
+    summary: {
+      English: 'Understand how metals and non-metals combine to form ionic compounds.',
+      Hindi: 'समझें कि धातु और अधातु कैसे मिलकर आयनिक यौगिक बनाते हैं।',
+      Marathi: 'धातू आणि अधातू कशा एकत्र येऊन आयनिक संयुगे तयार करतात हे समजून घ्या.',
+    },
+  },
+  'BIO9-CELL-01': {
+    estimatedMinutes: 10,
+    summary: {
+      English: 'Learn the basic parts of a cell and what each organelle does.',
+      Hindi: 'कोशिका के मूल भागों और प्रत्येक अंगक के कार्य को जानें।',
+      Marathi: 'पेशीचे मूलभूत भाग आणि प्रत्येक पेशीअंगाचे कार्य शिका.',
     },
   },
 
@@ -548,6 +596,162 @@ export const QUESTION_BANK: Record<string, BankQuestion[]> = {
         English: "'Have/has + past participle' forms the present perfect tense.",
         Hindi: "'have/has + past participle' वर्तमान पूर्ण काल बनाता है।",
         Marathi: "'have/has + past participle' ने वर्तमान पूर्ण काळ तयार होतो.",
+      },
+    },
+  ],
+
+  /* --- Physics: Motion --- */
+  'PHY10-MOTION-01': [
+    {
+      id: 'PHY10-MOTION-01-Q1',
+      topicCode: 'PHY10-MOTION-01',
+      question: 'What is the SI unit of speed?',
+      options: ['m', 'm/s', 'm/s²', 'kg'],
+      correctIndex: 1,
+      explanation: {
+        English: 'Speed is measured in metres per second (m/s).',
+        Hindi: 'चाल का SI मात्रक मीटर प्रति सेकंड (m/s) है।',
+        Marathi: 'वेगाचे SI एकक मीटर प्रति सेकंद (m/s) आहे.',
+      },
+    },
+    {
+      id: 'PHY10-MOTION-01-Q2',
+      topicCode: 'PHY10-MOTION-01',
+      question: 'A car travels 100 km in 2 hours. What is its average speed?',
+      options: ['25 km/h', '50 km/h', '100 km/h', '200 km/h'],
+      correctIndex: 1,
+      explanation: {
+        English: 'Speed = distance ÷ time = 100 km ÷ 2 h = 50 km/h.',
+        Hindi: 'चाल = दूरी ÷ समय = 100 किमी ÷ 2 घंटे = 50 किमी/घंटा।',
+        Marathi: 'वेग = अंतर ÷ वेळ = 100 किमी ÷ 2 तास = 50 किमी/तास.',
+      },
+    },
+    {
+      id: 'PHY10-MOTION-01-Q3',
+      topicCode: 'PHY10-MOTION-01',
+      question: 'Velocity is different from speed because velocity has:',
+      options: ['a unit', 'a direction', 'a magnitude only', 'no meaning'],
+      correctIndex: 1,
+      explanation: {
+        English: 'Velocity is speed in a given direction; speed alone has no direction.',
+        Hindi: 'वेग एक निश्चित दिशा में चाल है; अकेली चाल की कोई दिशा नहीं होती।',
+        Marathi: 'गती ही ठराविक दिशेतील वेग असते; एकट्या वेगाला दिशा नसते.',
+      },
+    },
+    {
+      id: 'PHY10-MOTION-01-Q4',
+      topicCode: 'PHY10-MOTION-01',
+      question: "If a car's velocity increases from 0 to 20 m/s in 4 seconds, what is its acceleration?",
+      options: ['4 m/s²', '5 m/s²', '20 m/s²', '80 m/s²'],
+      correctIndex: 1,
+      explanation: {
+        English: 'Acceleration = change in velocity ÷ time = (20-0)/4 = 5 m/s².',
+        Hindi: 'त्वरण = वेग में परिवर्तन ÷ समय = (20-0)/4 = 5 मी/से²।',
+        Marathi: 'प्रवेग = वेगातील बदल ÷ वेळ = (20-0)/4 = 5 मी/से².',
+      },
+    },
+  ],
+
+  /* --- Chemistry: Metals and Non-Metals --- */
+  'CHEM10-METALS-01': [
+    {
+      id: 'CHEM10-METALS-01-Q1',
+      topicCode: 'CHEM10-METALS-01',
+      question: 'Ionic compounds are formed by the transfer of:',
+      options: ['protons', 'neutrons', 'electrons', 'molecules'],
+      correctIndex: 2,
+      explanation: {
+        English: 'Ionic bonds form when electrons transfer from one atom to another.',
+        Hindi: 'आयनिक बंध तब बनते हैं जब इलेक्ट्रॉन एक परमाणु से दूसरे में स्थानांतरित होते हैं।',
+        Marathi: 'जेव्हा इलेक्ट्रॉन एका अणूपासून दुसऱ्या अणूकडे स्थानांतरित होतात तेव्हा आयनिक बंध तयार होतात.',
+      },
+    },
+    {
+      id: 'CHEM10-METALS-01-Q2',
+      topicCode: 'CHEM10-METALS-01',
+      question: 'In the formation of NaCl, sodium:',
+      options: ['gains an electron', 'loses an electron', 'gains a proton', 'shares an electron'],
+      correctIndex: 1,
+      explanation: {
+        English: 'Sodium loses one electron to form a stable Na⁺ ion.',
+        Hindi: 'सोडियम एक स्थिर Na⁺ आयन बनाने के लिए एक इलेक्ट्रॉन खो देता है।',
+        Marathi: 'सोडियम स्थिर Na⁺ आयन तयार करण्यासाठी एक इलेक्ट्रॉन गमावतो.',
+      },
+    },
+    {
+      id: 'CHEM10-METALS-01-Q3',
+      topicCode: 'CHEM10-METALS-01',
+      question: 'Ionic compounds generally have:',
+      options: ['low melting points', 'high melting points', 'no melting point', 'negative melting points'],
+      correctIndex: 1,
+      explanation: {
+        English: 'Strong electrostatic forces between ions give ionic compounds high melting points.',
+        Hindi: 'आयनों के बीच मजबूत स्थिरवैद्युत बल आयनिक यौगिकों को उच्च गलनांक देते हैं।',
+        Marathi: 'आयनांमधील मजबूत स्थिरविद्युत बलांमुळे आयनिक संयुगांचा वितळण बिंदू जास्त असतो.',
+      },
+    },
+    {
+      id: 'CHEM10-METALS-01-Q4',
+      topicCode: 'CHEM10-METALS-01',
+      question: 'Which of these is an ionic compound?',
+      options: ['O2', 'NaCl', 'H2', 'CH4'],
+      correctIndex: 1,
+      explanation: {
+        English: 'NaCl (table salt) is a classic ionic compound formed from Na⁺ and Cl⁻.',
+        Hindi: 'NaCl (नमक) Na⁺ और Cl⁻ से बना एक आदर्श आयनिक यौगिक है।',
+        Marathi: 'NaCl (मीठ) हे Na⁺ आणि Cl⁻ पासून बनलेले आदर्श आयनिक संयुग आहे.',
+      },
+    },
+  ],
+
+  /* --- Biology: The Fundamental Unit of Life --- */
+  'BIO9-CELL-01': [
+    {
+      id: 'BIO9-CELL-01-Q1',
+      topicCode: 'BIO9-CELL-01',
+      question: 'The cell membrane is also known as the:',
+      options: ['nuclear membrane', 'plasma membrane', 'cell wall', 'cytoplasm'],
+      correctIndex: 1,
+      explanation: {
+        English: 'The outer boundary of a cell that controls what enters and exits is the plasma membrane.',
+        Hindi: 'कोशिका की बाहरी सीमा जो प्रवेश और निकास को नियंत्रित करती है, प्लाज़्मा झिल्ली है।',
+        Marathi: 'पेशीची बाह्य सीमा जी आत-बाहेर जाण्याचे नियंत्रण करते ती प्लाझ्मा पटल आहे.',
+      },
+    },
+    {
+      id: 'BIO9-CELL-01-Q2',
+      topicCode: 'BIO9-CELL-01',
+      question: "Which organelle is known as the 'powerhouse of the cell'?",
+      options: ['Nucleus', 'Ribosome', 'Mitochondria', 'Golgi body'],
+      correctIndex: 2,
+      explanation: {
+        English: "Mitochondria release energy through respiration, earning the nickname 'powerhouse of the cell'.",
+        Hindi: "माइटोकॉन्ड्रिया श्वसन के माध्यम से ऊर्जा छोड़ते हैं, इसलिए इन्हें 'कोशिका का पावरहाउस' कहा जाता है।",
+        Marathi: "माइटोकॉन्ड्रिया श्वसनाद्वारे ऊर्जा सोडतात, म्हणून त्यांना 'पेशीचे पॉवरहाऊस' म्हटले जाते.",
+      },
+    },
+    {
+      id: 'BIO9-CELL-01-Q3',
+      topicCode: 'BIO9-CELL-01',
+      question: 'Which structure controls all the activities of the cell?',
+      options: ['Cytoplasm', 'Nucleus', 'Cell wall', 'Vacuole'],
+      correctIndex: 1,
+      explanation: {
+        English: "The nucleus contains DNA and directs all of the cell's activities.",
+        Hindi: 'केंद्रक में DNA होता है और यह कोशिका की सभी गतिविधियों को निर्देशित करता है।',
+        Marathi: 'केंद्रकात DNA असतो आणि तो पेशीच्या सर्व क्रियांचे निर्देशन करतो.',
+      },
+    },
+    {
+      id: 'BIO9-CELL-01-Q4',
+      topicCode: 'BIO9-CELL-01',
+      question: 'Which of these is found only in plant cells, not animal cells?',
+      options: ['Mitochondria', 'Cell membrane', 'Cell wall', 'Nucleus'],
+      correctIndex: 2,
+      explanation: {
+        English: 'The cell wall is a rigid outer layer found in plant cells but not animal cells.',
+        Hindi: 'कोशिका भित्ति एक कठोर बाहरी परत है जो पादप कोशिकाओं में होती है, जंतु कोशिकाओं में नहीं।',
+        Marathi: 'पेशीभित्तिका ही एक कठीण बाह्य थर आहे जी वनस्पती पेशींमध्ये असते, प्राणी पेशींमध्ये नसते.',
       },
     },
   ],
@@ -988,7 +1192,7 @@ export function getDiagnosticQuestions(
   subjects: string[],
   board: Board,
   grade: string,
-  maxTopics = 6,
+  maxTopics = 9,
   perTopic = 3
 ): BankQuestion[] {
   const topics = getTopicsForSubjects(subjects, board, grade).slice(0, maxTopics);
