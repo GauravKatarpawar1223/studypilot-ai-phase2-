@@ -1,9 +1,23 @@
 import { TOPIC_BANK } from '@/data/questionBank';
 import type { DiagnosticAnswer, PracticeSession, SkillDifficulty, TopicMastery } from '@/types';
 
+/**
+ * Single source of truth for the score thresholds that classify a topic's
+ * mastery and recommend a difficulty level. Kept here, named, instead of
+ * scattered as magic numbers across UI components — change these two
+ * numbers and every screen (Diagnostic Results, Progress, Practice
+ * difficulty suggestion, adaptive plan re-ordering) picks it up.
+ */
+export const MASTERY_THRESHOLDS = {
+  /** scorePct at or above this counts as 'strong' mastery / 'hard' difficulty. */
+  strong: 80,
+  /** scorePct at or above this (but below `strong`) counts as 'developing' mastery / 'medium' difficulty. */
+  developing: 50,
+} as const;
+
 function statusFromScore(scorePct: number): TopicMastery['status'] {
-  if (scorePct >= 80) return 'strong';
-  if (scorePct >= 50) return 'developing';
+  if (scorePct >= MASTERY_THRESHOLDS.strong) return 'strong';
+  if (scorePct >= MASTERY_THRESHOLDS.developing) return 'developing';
   return 'weak';
 }
 
@@ -91,10 +105,11 @@ export function mergeMasteries(existing: TopicMastery[], fresh: TopicMastery[]):
 /**
  * Deterministic difficulty recommendation based on current mastery score.
  * Never depends on the AI endpoint — always available, matching Phase 4's
- * reliability requirement (item 13).
+ * reliability requirement (item 13). Uses the same MASTERY_THRESHOLDS as
+ * status classification, so the two stay consistent by construction.
  */
 export function recommendedDifficulty(scorePct: number): SkillDifficulty {
-  if (scorePct < 50) return 'easy';
-  if (scorePct < 80) return 'medium';
+  if (scorePct < MASTERY_THRESHOLDS.developing) return 'easy';
+  if (scorePct < MASTERY_THRESHOLDS.strong) return 'medium';
   return 'hard';
 }
